@@ -1,0 +1,48 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+body { background: #fff; color: #111; line-height: 1.5; }
+a { text-decoration: none; color: inherit; }
+
+header { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: #000; color: #fff; position: sticky; top: 0; z-index: 10; }
+header img.logo { width: 40px; height: 40px; }
+header .menu { font-size: 20px; cursor: pointer; }
+
+.banner { text-align: center; padding: 20px; background: #f9f9f9; }
+.banner h1 { font-size: 1.5rem; }
+
+.categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; padding: 15px; }
+.categories .cat { background: #eee; text-align: center; padding: 15px; border-radius: 12px; font-size: 0.9rem; cursor: pointer; }
+
+section { margin: 20px 0; }
+section h2 { font-size: 1.2rem; margin-bottom: 10px; padding: 0 15px; }
+
+.products { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; padding: 0 15px; }
+.product-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; cursor: pointer; }
+.product-card img { width: 100%; height: auto; }
+.product-card .info { padding: 10px; font-size: 0.9rem; }
+.product-card .price { font-weight: bold; }
+.product-card .old-price { text-decoration: line-through; color: #777; font-size: 0.8rem; margin-left: 5px; }
+.badge { position: absolute; background: #e00; color: #fff; font-size: 0.8rem; padding: 2px 6px; border-radius: 8px; top: 8px; right: 8px; }
+
+footer.navbar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; justify-content: space-around; border-top: 1px solid #ddd; padding: 10px 0; }
+footer.navbar div { text-align: center; font-size: 0.8rem; cursor: pointer; }
+
+.page { display: none; padding: 20px; }
+.page.active { display: block; }
+
+.drawer { position: fixed; top: 0; right: -100%; width: 80%; max-width: 400px; height: 100%; background: #fff; box-shadow: -2px 0 6px rgba(0,0,0,0.2); transition: right 0.3s; padding: 20px; overflow-y: auto; z-index: 100; }
+.drawer.active { right: 0; }
+.drawer h2 { margin-bottom: 15px; }
+
+@media (min-width: 768px) {
+  header { padding: 15px 40px; }
+  .banner h1 { font-size: 2rem; }
+  section h2 { font-size: 1.5rem; }
+  .product-card .info { font-size: 1rem; }
+  .categories { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+}
+
+@media (min-width: 1200px) {
+  body { max-width: 1200px; margin: auto; }
+  header, footer.navbar { border-radius: 0 0 12px 12px; }
+  .products { gap: 25px; }
+}

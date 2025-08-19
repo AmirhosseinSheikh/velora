@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Black Shop</title>
+  <link rel="stylesheet" href="../statics/style.css">
+</head>
+<body>
+  <header>
+    <div class="menu">☰</div>
+    <img src="logo.png" alt="Logo" class="logo">
+    <div onclick="openDrawer('cartDrawer')">🛒</div>
+  </header>
+
+  <div id="home" class="page active">
+    <div class="banner">
+      <h1>فروشگاه BLACK</h1>
+    </div>
+
+    <div class="categories">
+      <div class="cat">انگشتر</div>
+      <div class="cat">ساعت</div>
+      <div class="cat">عینک</div>
+      <div class="cat">گردنبند</div>
+      <div class="cat">دستبند</div>
+    </div>
+
+    <section>
+      <h2>تخفیفات ویژه</h2>
+      <div class="products">
+        <div class="product-card" onclick="showPage('detail')">
+          <div style="position:relative;">
+            <img src="prod1.jpg" alt="گردنبند">
+            <span class="badge">-10%</span>
+          </div>
+          <div class="info">
+            <p>گردنبند مکعب پیچی با حک میخی</p>
+            <p><span class="price">۳۲۵,۰۰۰ تومان</span><span class="old-price">۳۶۰,۰۰۰</span></p>
+          </div>
+        </div>
+        <div class="product-card">
+          <div style="position:relative;">
+            <img src="prod2.jpg" alt="بنگل">
+            <span class="badge">-8%</span>
+          </div>
+          <div class="info">
+            <p>بنگل مردانه مدل لج</p>
+            <p><span class="price">۳۶۵,۰۰۰ تومان</span><span class="old-price">۳۹۸,۰۰۰</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>جدیدترین محصولات</h2>
+      <div class="products">
+        <div class="product-card">
+          <img src="prod3.jpg" alt="دستبند">
+          <div class="info">
+            <p>دستبند امگا کنفی مردانه مشکی قفل نقره</p>
+            <p class="price">۶۴۵,۰۰۰ تومان</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="prod4.jpg" alt="ست">
+          <div class="info">
+            <p>ست دستبند و گردنبند مردانه استیل طرح ۴</p>
+            <p class="price">۳۸۵,۰۰۰ تومان</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="detail" class="page">
+    <h2>جزئیات محصول</h2>
+    <p>اینجا توضیحات محصول انتخاب شده نمایش داده می‌شود.</p>
+    <button onclick="addToCart()">افزودن به سبد خرید</button>
+  </div>
+
+  <div id="profile" class="page">
+    <h2>پروفایل کاربری</h2>
+    <form>
+      <label>نام کاربری</label>
+      <input type="text" />
+      <label>ایمیل</label>
+      <input type="email" />
+    </form>
+  </div>
+
+  <div id="cartDrawer" class="drawer">
+    <h2>سبد خرید</h2>
+    <p>محصولات شما اینجا نشان داده می‌شوند</p>
+  </div>
+
+  <div id="wishlistDrawer" class="drawer">
+    <h2>علاقه‌مندی‌ها</h2>
+    <p>لیست علاقه‌مندی‌های شما</p>
+  </div>
+
+  <footer class="navbar">
+    <div onclick="showPage('home')">🏠<br>خانه</div>
+    <div onclick="showPage('profile')">👤<br>پروفایل</div>
+    <div onclick="openDrawer('wishlistDrawer')">❤️<br>علاقه‌مندی</div>
+    <div onclick="openDrawer('cartDrawer')">🛒<br>سبد خرید</div>
+  </footer>
+
+  <script src="../statics/app.js"></script>
+</body>
+</html>
