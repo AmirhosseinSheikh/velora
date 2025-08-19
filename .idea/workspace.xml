@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="74b649e1-4963-4656-9ad7-3f2787d69619" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/product/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/veloracss.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/velorajs.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/velorahtml.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/velorahtml.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/velora/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/velora/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/velora/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/velora/urls.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,6 +95,7 @@
       <workItem from="1755528216446" duration="498000" />
       <workItem from="1755589312962" duration="2578000" />
       <workItem from="1755591931734" duration="947000" />
+      <workItem from="1755592910212" duration="1523000" />
     </task>
     <servers />
   </component>

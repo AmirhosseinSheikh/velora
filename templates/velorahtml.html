@@ -1,112 +1,572 @@
-{% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Black Shop</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Black Shop — تک‌صفحه‌ای (SPA) ریسپانسیو</title>
+  <style>
+    /* ---------- Reset & Base ---------- */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font-family: system-ui, -apple-system, Segoe UI, Roboto, "IRANSans", "Vazirmatn", Arial, sans-serif; background:#0b0b0b; color:#fff}
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;cursor:pointer}
+
+    :root{
+      --bg:#0b0b0b;
+      --card:#101010;
+      --muted:#bdbdbd;
+      --line:#1d1d1d;
+      --primary:#ffffff;
+      --accent:#cfcfcf;
+      --pill:#1b1b1b;
+      --btn:#141414;
+      --btn-2:#171717;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:16px;
+      --container: 690px;
+    }
+
+    .container{width:100%;max-width:var(--container);margin:0 auto;padding:12px 16px 110px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .row{display:flex;gap:16px}
+    .grid{display:grid;gap:16px}
+
+    /* ---------- Top App Bar ---------- */
+    .appbar{position:sticky;top:0;z-index:50;background:rgba(11,11,11,.85);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--line)}
+    .appbar-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+    .icon-btn{width:36px;height:36px;display:grid;place-items:center;border-radius:12px;background:var(--btn);border:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-badge{width:44px;height:44px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;font-weight:800;letter-spacing:1px}
+    .brand-badge span{display:inline-block;border:2px solid #fff;padding:2px 6px;border-radius:8px}
+
+    /* ---------- Hero ---------- */
+    .hero{overflow:hidden;border-radius:20px}
+    .hero img{aspect-ratio:16/9;object-fit:cover;filter:brightness(.7)}
+    .hero .overlay{position:absolute;inset:0;display:grid;place-items:end start;padding:18px}
+    .hero h2{margin:0;font-size:26px;letter-spacing:2px}
+    .hero small{color:var(--muted)}
+    .relative{position:relative}
+
+    /* ---------- Category tiles ---------- */
+    .cats{grid-template-columns:repeat(2,1fr)}
+    .tile{position:relative;overflow:hidden;border-radius:22px;border:1px solid var(--line);background:#111}
+    .tile img{height:210px;object-fit:cover}
+    .tile .label{position:absolute;right:14px;bottom:14px;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);border:1px solid var(--line);padding:10px 18px;border-radius:16px;font-weight:700}
+
+    /* ---------- Section header ---------- */
+    .section-title{display:flex;align-items:center;gap:12px;margin:26px 2px 14px}
+    .section-title h3{margin:0;font-size:22px}
+    .section-title .hr{flex:1;height:1px;background:var(--line)}
+
+    /* ---------- Cards / Products ---------- */
+    .h-scroll{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:2px}
+    .h-scroll::-webkit-scrollbar{height:6px}
+    .h-scroll::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:10px}
+
+    .p-card{min-width:290px;scroll-snap-align:start;background:#0f0f0f;border:1px solid var(--line);border-radius:18px;padding:14px}
+    .p-img{position:relative;border-radius:14px;overflow:hidden;background:#0c0c0c}
+    .badge{position:absolute;top:10px;left:10px;background:#0a0a0a;border:1px solid var(--line);border-radius:12px;padding:6px 10px;font-size:12px}
+    .fav, .cart-mini{position:absolute;top:10px;right:10px;width:40px;height:72px;display:flex;flex-direction:column;gap:8px}
+    .bubble{display:grid;place-items:center;border-radius:999px;background:rgba(255,255,255,.06);backdrop-filter:blur(8px);border:1px solid var(--line);width:40px;height:40px}
+    .price{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+    .old{color:#888;text-decoration:line-through;font-size:13px}
+    .new{font-weight:800}
+
+    /* ---------- Tabs ---------- */
+    .tabs{display:flex;gap:14px;overflow:auto;border-bottom:1px solid var(--line);margin-bottom:14px}
+    .tab{padding:10px 16px;border-radius:999px;background:var(--pill);border:1px solid var(--line);white-space:nowrap}
+    .tab.active{background:#ffffff0e}
+
+    /* ---------- Bottom nav ---------- */
+    .bottom-nav{position:fixed;right:0;left:0;bottom:0;background:rgba(13,13,13,.92);backdrop-filter:blur(8px);border-top:1px solid var(--line);z-index:60}
+    .bottom-nav .wrap{display:flex;justify-content:space-around;gap:10px;padding:10px 10px}
+    .bn-item{display:flex;flex-direction:column;align-items:center;gap:6px}
+    .bn-icon{width:46px;height:46px;border-radius:16px;background:var(--btn-2);border:1px solid var(--line);display:grid;place-items:center}
+    .bn-item small{color:var(--muted)}
+
+    /* ---------- Drawers / Modals ---------- */
+    .drawer{position:fixed;inset:0;display:none}
+    .drawer.active{display:block}
+    .scrim{position:absolute;inset:0;background:rgba(0,0,0,.6)}
+    .sheet{position:absolute;left:0;right:0;bottom:0;background:#0f0f0f;border-top-left-radius:24px;border-top-right-radius:24px;border:1px solid var(--line);padding:16px 16px 26px;max-height:85vh;overflow:auto}
+
+    /* ---------- Pages ---------- */
+    .page{display:none}
+    .page.active{display:block}
+    .gallery{display:flex;gap:10px;overflow:auto}
+    .qty{display:flex;align-items:center;gap:10px}
+    .qty button{width:36px;height:36px;border-radius:10px;background:#141414;border:1px solid var(--line);color:#fff}
+    .btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:14px;background:#fff;color:#000;font-weight:800;border:0}
+    .btn-ghost{padding:12px 16px;border-radius:14px;background:#151515;border:1px solid var(--line);color:#fff}
+
+    /* ---------- Forms ---------- */
+    .form{display:grid;gap:14px}
+    .field{display:grid;gap:6px}
+    .field input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#101010;color:#fff}
+
+    /* Helpers */
+    .muted{color:var(--muted)}
+    .center{display:grid;place-items:center}
+    .actions{display:flex;gap:10px}
+    .mt{margin-top:12px}
+    .mb{margin-bottom:12px}
+
+    /* ---------- Responsive ---------- */
+    @media (min-width: 768px){
+      :root{ --container: 980px; }
+      .cats{grid-template-columns:repeat(4,1fr)}
+      .p-card{min-width:340px}
+      .hero img{aspect-ratio:21/9}
+    }
+    @media (min-width: 1200px){
+      :root{ --container: 1200px; }
+      .container{padding-bottom:40px}
+      .bottom-nav{position:sticky;bottom:auto;top:0}
+      .bottom-nav .wrap{justify-content:center;gap:24px}
+      .bn-icon{width:40px;height:40px}
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <div class="menu">☰</div>
-    <img src="logo.png" alt="Logo" class="logo">
-    <div onclick="openDrawer('cartDrawer')">🛒</div>
+  <!-- Top bar -->
+  <header class="appbar">
+    <div class="appbar-inner">
+      <button class="icon-btn" id="openMenu" aria-label="منو">☰</button>
+      <div class="brand">
+        <div class="brand-badge" aria-label="Black Shop"><span>B</span></div>
+      </div>
+      <button class="icon-btn" id="openCart" aria-label="سبد خرید" onclick="openCart()">🛒</button>
+    </div>
   </header>
 
-  <div id="home" class="page active">
-    <div class="banner">
-      <h1>فروشگاه BLACK</h1>
-    </div>
-
-    <div class="categories">
-      <div class="cat">انگشتر</div>
-      <div class="cat">ساعت</div>
-      <div class="cat">عینک</div>
-      <div class="cat">گردنبند</div>
-      <div class="cat">دستبند</div>
-    </div>
-
-    <section>
-      <h2>تخفیفات ویژه</h2>
-      <div class="products">
-        <div class="product-card" onclick="showPage('detail')">
-          <div style="position:relative;">
-            <img src="prod1.jpg" alt="گردنبند">
-            <span class="badge">-10%</span>
-          </div>
-          <div class="info">
-            <p>گردنبند مکعب پیچی با حک میخی</p>
-            <p><span class="price">۳۲۵,۰۰۰ تومان</span><span class="old-price">۳۶۰,۰۰۰</span></p>
+  <!-- PAGES WRAPPER -->
+  <main class="container">
+    <!-- Home Page -->
+    <section id="page-home" class="page active">
+      <div class="relative hero card">
+        <img src="https://picsum.photos/1600/760?grayscale" alt="Black Shop storefront"/>
+        <div class="overlay">
+          <div>
+            <h2>BLACK SHOP</h2>
+            <small>View Collection</small>
           </div>
         </div>
-        <div class="product-card">
-          <div style="position:relative;">
-            <img src="prod2.jpg" alt="بنگل">
-            <span class="badge">-8%</span>
+      </div>
+
+      <div class="section-title">
+        <div class="hr"></div>
+        <h3>محصولات آی بلک شاپ</h3>
+        <div class="hr"></div>
+      </div>
+
+      <!-- Categories -->
+      <div class="grid cats">
+        <a href="#cat-rings" class="tile">
+          <img src="https://picsum.photos/600/600?1" alt="انگشتر"/>
+          <span class="label">انگشتر</span>
+        </a>
+        <a href="#cat-watches" class="tile">
+          <img src="https://picsum.photos/600/600?2" alt="ساعت"/>
+          <span class="label">ساعت</span>
+        </a>
+        <a href="#cat-bracelets" class="tile">
+          <img src="https://picsum.photos/600/600?3" alt="دستبند"/>
+          <span class="label">دستبند</span>
+        </a>
+        <a href="#cat-necklaces" class="tile">
+          <img src="https://picsum.photos/600/600?4" alt="گردنبند"/>
+          <span class="label">گردنبند</span>
+        </a>
+      </div>
+
+      <!-- Special Offers -->
+      <div class="section-title">
+        <div class="hr"></div>
+        <h3>تخفیفات ویژه</h3>
+        <div class="hr"></div>
+      </div>
+      <div class="h-scroll">
+        <!-- Offer 1 -->
+        <article class="p-card">
+          <div class="p-img">
+            <img src="https://picsum.photos/800/600?black" alt="گردنبند مکعب پیچی"/>
+            <span class="badge">-10٪</span>
+            <div class="fav">
+              <button class="bubble" aria-label="افزودن به سبد">🛒</button>
+              <button class="bubble" aria-label="علاقه‌مندی">♡</button>
+            </div>
           </div>
-          <div class="info">
-            <p>بنگل مردانه مدل لج</p>
-            <p><span class="price">۳۶۵,۰۰۰ تومان</span><span class="old-price">۳۹۸,۰۰۰</span></p>
+          <h4 class="mb">گردنبند مکعب پیچی با حک میخی</h4>
+          <div class="price">
+            <span class="old">۳۶۰,۰۰۰</span>
+            <span class="new">۳۲۵,۰۰۰ تومان</span>
           </div>
+        </article>
+        <!-- Offer 2 -->
+        <article class="p-card">
+          <div class="p-img">
+            <img src="https://picsum.photos/800/600?grey" alt="بنگل مردانه مدل لچ"/>
+            <span class="badge">-8٪</span>
+            <div class="fav">
+              <button class="bubble">🛒</button>
+              <button class="bubble">♡</button>
+            </div>
+          </div>
+          <h4 class="mb">بنگل مردانه مدل لچ</h4>
+          <div class="price">
+            <span class="old">۳۹۸,۰۰۰</span>
+            <span class="new">۳۶۵,۰۰۰ تومان</span>
+          </div>
+        </article>
+      </div>
+      <div class="center mt">
+        <a href="#offers" class="btn-ghost">مشاهده همه</a>
+      </div>
+
+      <!-- Newest Products with Tabs -->
+      <div class="section-title">
+        <div class="hr"></div>
+        <h3>جدیدترین محصولات</h3>
+        <div class="hr"></div>
+      </div>
+
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-tab="bracelet">دستبند</button>
+        <button class="tab" data-tab="necklace">گردنبند</button>
+        <button class="tab" data-tab="ring">انگشتر</button>
+        <button class="tab" data-tab="watch">ساعت</button>
+        <button class="tab" data-tab="glasses">عینک</button>
+      </div>
+
+      <div id="tab-panels">
+        <!-- BRACELET GRID -->
+        <div class="grid" data-panel="bracelet" style="grid-template-columns:repeat(2,1fr);gap:16px">
+          <article class="card" onclick="goDetail(1)">
+            <img src="https://picsum.photos/600/500?bracelet1" alt="دستبند امگا کنفی"/>
+            <div style="padding:12px">
+              <div class="row" style="justify-content:space-between;align-items:center">
+                <h4 style="margin:0;font-size:15px">دستبند امگا کنفی مردانه مشکی قفل نقره</h4>
+                <button class="bubble" onclick="event.stopPropagation();toggleWish('دستبند امگا کنفی', this)">♡</button>
+              </div>
+              <div class="price"><span class="muted">قیمت</span><strong>۶۴۵,۰۰۰</strong></div>
+            </div>
+          </article>
+          <article class="card" onclick="goDetail(2)">
+            <img src="https://picsum.photos/600/500?set=2" alt="ست دستبند و گردنبند"/>
+            <div style="padding:12px">
+              <div class="row" style="justify-content:space-between;align-items:center">
+                <h4 style="margin:0;font-size:15px">ست دستبند گردنبند مردانه استیل طرح ۴</h4>
+                <button class="bubble" onclick="event.stopPropagation();toggleWish('ست دستبند گردنبند', this)">♡</button>
+              </div>
+              <div class="price"><span class="muted">قیمت</span><strong>۳۸۵,۰۰۰</strong></div>
+            </div>
+          </article>
+          <article class="card" onclick="goDetail(3)">
+            <img src="https://picsum.photos/600/500?set=3" alt="دستبند چرمی"/>
+            <div style="padding:12px">
+              <div class="row" style="justify-content:space-between;align-items:center">
+                <h4 style="margin:0;font-size:15px">دستبند چرمی مردانه طرح فرد قفل مگنتی</h4>
+                <button class="bubble" onclick="event.stopPropagation();toggleWish('دستبند چرمی', this)">♡</button>
+              </div>
+              <div class="price"><span class="muted">قیمت</span><strong>۵۸۵,۰۰۰</strong></div>
+            </div>
+          </article>
+          <article class="card" onclick="goDetail(4)">
+            <img src="https://picsum.photos/600/500?set=4" alt="دستبند استیل ۴ وجهی"/>
+            <div style="padding:12px">
+              <div class="row" style="justify-content:space-between;align-items:center">
+                <h4 style="margin:0;font-size:15px">دستبند استیل مردانه طرح ۴ وجهی</h4>
+                <button class="bubble" onclick="event.stopPropagation();toggleWish('دستبند استیل ۴ وجهی', this)">♡</button>
+              </div>
+              <div class="price"><span class="muted">قیمت</span><strong>۲۵۵,۰۰۰</strong></div>
+            </div>
+          </article>
+        </div>
+        <!-- Other panels (empty state) -->
+        <div class="center muted" data-panel="necklace" style="display:none;padding:30px">به‌زودی محصولات جدید گردنبند…</div>
+        <div class="center muted" data-panel="ring" style="display:none;padding:30px">به‌زودی محصولات جدید انگشتر…</div>
+        <div class="center muted" data-panel="watch" style="display:none;padding:30px">به‌زودی ساعت‌های جدید…</div>
+        <div class="center muted" data-panel="glasses" style="display:none;padding:30px">به‌زودی عینک‌های جدید…</div>
+      </div>
+    </section>
+
+    <!-- Product Detail Page -->
+    <section id="page-detail" class="page">
+      <div class="section-title"><h3>جزئیات محصول</h3><div class="hr"></div></div>
+      <div class="gallery card" style="padding:12px">
+        <img id="d-img1" src="https://picsum.photos/800/600?bracelet1" alt="تصویر ۱" style="border-radius:12px;max-height:420px;object-fit:cover"/>
+        <img id="d-img2" src="https://picsum.photos/800/600?bracelet2" alt="تصویر ۲" style="border-radius:12px;max-height:420px;object-fit:cover"/>
+      </div>
+      <h2 id="d-title" style="margin:16px 4px 8px">دستبند امگا کنفی مردانه مشکی قفل نقره</h2>
+      <div class="row" style="justify-content:space-between;align-items:center;margin:0 4px 10px">
+        <div>
+          <div class="muted">قیمت</div>
+          <div id="d-price" class="new" style="font-size:22px">۶۴۵,۰۰۰ تومان</div>
+        </div>
+        <button class="bubble" title="علاقه‌مندی" onclick="toggleWish(document.getElementById('d-title').textContent)">♡</button>
+      </div>
+      <p class="muted" style="margin:0 4px 16px" id="d-desc">جنس بند کنفی مقاوم، یراق نقره‌ای با قفل امن. مناسب استفاده روزمره و استایل مینیمال.</p>
+      <div class="row" style="align-items:center;justify-content:space-between">
+        <div class="qty">
+          <button onclick="chg(-1)">−</button>
+          <strong id="qty">1</strong>
+          <button onclick="chg(1)">+</button>
+        </div>
+        <div class="actions">
+          <button class="btn-ghost" onclick="goHome()">بازگشت</button>
+          <button class="btn-primary" onclick="addToCart()">🛒 افزودن به سبد</button>
         </div>
       </div>
     </section>
 
-    <section>
-      <h2>جدیدترین محصولات</h2>
-      <div class="products">
-        <div class="product-card">
-          <img src="prod3.jpg" alt="دستبند">
-          <div class="info">
-            <p>دستبند امگا کنفی مردانه مشکی قفل نقره</p>
-            <p class="price">۶۴۵,۰۰۰ تومان</p>
-          </div>
-        </div>
-        <div class="product-card">
-          <img src="prod4.jpg" alt="ست">
-          <div class="info">
-            <p>ست دستبند و گردنبند مردانه استیل طرح ۴</p>
-            <p class="price">۳۸۵,۰۰۰ تومان</p>
+    <!-- Profile Page -->
+    <section id="page-profile" class="page">
+      <div class="section-title"><h3>حساب کاربری</h3><div class="hr"></div></div>
+      <div class="card" style="padding:16px">
+        <div class="row" style="align-items:center;gap:12px">
+          <div class="brand-badge" style="width:56px;height:56px">B</div>
+          <div>
+            <strong id="u-name">میهمان</strong>
+            <div class="muted" id="u-email">—</div>
           </div>
         </div>
       </div>
+
+      <div class="card mt" style="padding:16px">
+        <h4 style="margin:0 0 12px">ورود / ثبت‌نام</h4>
+        <form class="form" onsubmit="login(event)">
+          <div class="row">
+            <div class="field" style="flex:1">
+              <label>ایمیل</label>
+              <input type="email" id="email" placeholder="you@example.com" required/>
+            </div>
+            <div class="field" style="flex:1">
+              <label>رمز عبور</label>
+              <input type="password" id="pass" placeholder="••••••••" required/>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn-primary" type="submit">ورود</button>
+            <button class="btn-ghost" type="button" onclick="logout()">خروج</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card mt" style="padding:16px">
+        <h4 style="margin:0 0 12px">جزئیات و آدرس</h4>
+        <form class="form" onsubmit="saveDetails(event)">
+          <div class="row">
+            <div class="field" style="flex:1">
+              <label>نام</label>
+              <input id="fname" placeholder="نام"/>
+            </div>
+            <div class="field" style="flex:1">
+              <label>نام خانوادگی</label>
+              <input id="lname" placeholder="نام خانوادگی"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field" style="flex:1">
+              <label>شماره تماس</label>
+              <input id="phone" placeholder="09xxxxxxxxx"/>
+            </div>
+            <div class="field" style="flex:2">
+              <label>آدرس</label>
+              <input id="addr" placeholder="تهران، ..."/>
+            </div>
+          </div>
+          <button class="btn-ghost" type="submit">ذخیره</button>
+        </form>
+      </div>
+
+      <div class="grid mt" style="grid-template-columns:repeat(2,1fr)">
+        <div class="card" style="padding:16px">
+          <h4 style="margin:0 0 8px">سفارش‌ها</h4>
+          <div class="muted">هنوز سفارشی ثبت نشده است.</div>
+        </div>
+        <div class="card" style="padding:16px">
+          <h4 style="margin:0 0 8px">علاقه‌مندی‌ها</h4>
+          <div id="profile-wish" class="muted">لیست خالی است.</div>
+        </div>
+      </div>
     </section>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav" aria-label="پیمایش پایین">
+    <div class="wrap">
+      <a class="bn-item" href="#profile" onclick="openPage('page-profile')">
+        <div class="bn-icon">👤</div>
+        <small>حساب کاربری</small>
+      </a>
+      <button class="bn-item" onclick="openCart()">
+        <div class="bn-icon">🛒</div>
+        <small>سبد خرید</small>
+      </button>
+      <a class="bn-item" href="#wishlist" onclick="toggleDrawer('wish')">
+        <div class="bn-icon">❤</div>
+        <small>علاقه‌مندی</small>
+      </a>
+      <a class="bn-item" href="#home" onclick="openPage('page-home')">
+        <div class="bn-icon">🏬</div>
+        <small>فروشگاه</small>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Drawers -->
+  <div id="drawer-cart" class="drawer" aria-hidden="true">
+    <div class="scrim" onclick="toggleDrawer('cart')"></div>
+    <div class="sheet">
+      <h3 style="margin:0 0 10px">سبد خرید</h3>
+      <div id="cart-items" class="grid" style="gap:10px"></div>
+      <div class="row" style="justify-content:space-between;align-items:center;margin-top:14px">
+        <strong>مجموع: <span id="cart-total">۰</span> تومان</strong>
+        <button class="btn-primary">تسویه حساب</button>
+      </div>
+    </div>
   </div>
 
-  <div id="detail" class="page">
-    <h2>جزئیات محصول</h2>
-    <p>اینجا توضیحات محصول انتخاب شده نمایش داده می‌شود.</p>
-    <button onclick="addToCart()">افزودن به سبد خرید</button>
+  <div id="drawer-wish" class="drawer" aria-hidden="true">
+    <div class="scrim" onclick="toggleDrawer('wish')"></div>
+    <div class="sheet">
+      <h3 style="margin:0 0 10px">لیست علاقه‌مندی</h3>
+      <div id="wish-items" class="grid" style="gap:10px"></div>
+    </div>
   </div>
 
-  <div id="profile" class="page">
-    <h2>پروفایل کاربری</h2>
-    <form>
-      <label>نام کاربری</label>
-      <input type="text" />
-      <label>ایمیل</label>
-      <input type="email" />
-    </form>
-  </div>
+  <script>
+    // -------- Simple state --------
+    const cart=[]; const wish=[];
 
-  <div id="cartDrawer" class="drawer">
-    <h2>سبد خرید</h2>
-    <p>محصولات شما اینجا نشان داده می‌شوند</p>
-  </div>
+    // -------- Navigation between pages --------
+    function openPage(id){
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function goHome(){openPage('page-home')}
 
-  <div id="wishlistDrawer" class="drawer">
-    <h2>علاقه‌مندی‌ها</h2>
-    <p>لیست علاقه‌مندی‌های شما</p>
-  </div>
+    // -------- Tabs --------
+    const tabs = () => document.querySelectorAll('.tab');
+    const panels = () => document.querySelectorAll('[data-panel]');
+    function initTabs(){
+      tabs().forEach(t=>t.addEventListener('click',()=>{
+        tabs().forEach(x=>x.classList.remove('active'));
+        t.classList.add('active');
+        const key=t.dataset.tab;
+        panels().forEach(p=>{
+          p.style.display = (p.dataset.panel===key) ? (p.tagName==='DIV'?'grid':'block') : 'none';
+        })
+      }))
+    }
+    initTabs();
 
-  <footer class="navbar">
-    <div onclick="showPage('home')">🏠<br>خانه</div>
-    <div onclick="showPage('profile')">👤<br>پروفایل</div>
-    <div onclick="openDrawer('wishlistDrawer')">❤️<br>علاقه‌مندی</div>
-    <div onclick="openDrawer('cartDrawer')">🛒<br>سبد خرید</div>
-  </footer>
+    // -------- Product detail (demo) --------
+    const demoProducts={
+      1:{title:'دستبند امگا کنفی مردانه مشکی قفل نقره', price:645000, desc:'بند کنفی مقاوم، قفل ایمن، مناسب استفاده روزمره.', imgs:['https://picsum.photos/900/700?bracelet1','https://picsum.photos/900/700?bracelet2']},
+      2:{title:'ست دستبند گردنبند مردانه استیل طرح ۴', price:385000, desc:'استیل ضدزنگ، مناسب استایل کژوال.', imgs:['https://picsum.photos/900/700?set=21','https://picsum.photos/900/700?set=22']},
+      3:{title:'دستبند چرمی مردانه طرح فرد قفل مگنتی', price:585000, desc:'چرم مصنوعی باکیفیت و قفل مگنتی.', imgs:['https://picsum.photos/900/700?set=31','https://picsum.photos/900/700?set=32']},
+      4:{title:'دستبند استیل مردانه طرح ۴ وجهی', price:255000, desc:'استیل براق، طراحی چهاروجهی.', imgs:['https://picsum.photos/900/700?set=41','https://picsum.photos/900/700?set=42']}
+    };
 
-  <script src="/static/app.js"></script>
+    function goDetail(id){
+      const p = demoProducts[id];
+      if(!p) return;
+      document.getElementById('d-title').textContent=p.title;
+      document.getElementById('d-price').textContent= p.price.toLocaleString('fa-IR') + ' تومان';
+      document.getElementById('d-desc').textContent=p.desc;
+      document.getElementById('d-img1').src=p.imgs[0];
+      document.getElementById('d-img2').src=p.imgs[1];
+      openPage('page-detail');
+      location.hash = '#detail';
+    }
+
+    function chg(n){
+      const el=document.getElementById('qty');
+      let v=Math.max(1, (+el.textContent||1)+n); el.textContent=v;
+    }
+
+    // -------- Cart / Wish drawers --------
+    function toggleDrawer(name){
+      const el=document.getElementById('drawer-'+name);
+      el.classList.toggle('active');
+    }
+    function openCart(){ toggleDrawer('cart') }
+
+    function addToCart(){
+      const title=document.getElementById('d-title').textContent;
+      const qty=+document.getElementById('qty').textContent;
+      const priceNum= +(document.getElementById('d-price').textContent.replace(/[^\d]/g,''));
+      cart.push({title, qty, price:priceNum});
+      renderCart();
+      toggleDrawer('cart');
+    }
+    function renderCart(){
+      const wrap=document.getElementById('cart-items');
+      wrap.innerHTML='';
+      let total=0;
+      cart.forEach((it)=>{
+        total += it.qty * it.price;
+        const row=document.createElement('div');
+        row.className='card';
+        row.style.padding='12px';
+        row.innerHTML = `<div class="row" style="justify-content:space-between;align-items:center">
+          <div>
+            <strong>${it.title}</strong>
+            <div class="muted">تعداد: ${it.qty}</div>
+          </div>
+          <div>${(it.qty*it.price).toLocaleString('fa-IR')}</div>
+        </div>`;
+        wrap.appendChild(row);
+      })
+      document.getElementById('cart-total').textContent = total.toLocaleString('fa-IR');
+    }
+
+    function toggleWish(title, el){
+      const i = wish.findIndex(w=>w===title);
+      if(i>-1){ wish.splice(i,1); if(el) el.textContent='♡'; }
+      else{ wish.push(title); if(el) el.textContent='❤'; }
+      renderWish();
+    }
+    function renderWish(){
+      const list=document.getElementById('wish-items');
+      const prof=document.getElementById('profile-wish');
+      list.innerHTML='';
+      if(!wish.length){ list.innerHTML='<div class="muted">لیست خالی است.</div>'; if(prof) prof.textContent='لیست خالی است.'; return; }
+      wish.forEach(w=>{
+        const item=document.createElement('div');
+        item.className='card'; item.style.padding='12px';
+        item.innerHTML=`<div class="row" style="justify-content:space-between;align-items:center">
+          <div>${w}</div>
+          <button class="btn-ghost" onclick="toggleWish('${w}')">حذف</button>
+        </div>`;
+        list.appendChild(item);
+      })
+      if(prof) prof.textContent = wish.join('، ');
+    }
+
+    // -------- Fake auth --------
+    function login(e){
+      e.preventDefault();
+      const email=document.getElementById('email').value.trim();
+      document.getElementById('u-name').textContent='کاربر';
+      document.getElementById('u-email').textContent=email;
+      alert('ورود موفق! (دمو)');
+    }
+    function logout(){
+      document.getElementById('u-name').textContent='میهمان';
+      document.getElementById('u-email').textContent='—';
+    }
+    function saveDetails(e){ e.preventDefault(); alert('جزئیات ذخیره شد (دمو).'); }
+
+    // -------- Hash routing --------
+    const routes={"#home":"page-home","#profile":"page-profile","#detail":"page-detail"};
+    function applyRoute(){ const id=routes[location.hash]; if(id) openPage(id); }
+    window.addEventListener('hashchange',applyRoute);
+    applyRoute();
+  </script>
 </body>
 </html>
